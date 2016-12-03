@@ -14,11 +14,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -40,14 +42,14 @@ public class playListListActivity extends AppCompatActivity implements Navigatio
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
+    String EXTRA_MESSAGE = "sup";
+    String strResultIntent = "";
     private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_list);
-
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,6 +107,7 @@ public class playListListActivity extends AppCompatActivity implements Navigatio
                     .inflate(R.layout.playlist_list_content, parent, false);
             return new ViewHolder(view);
         }
+
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
@@ -199,21 +202,37 @@ public class playListListActivity extends AppCompatActivity implements Navigatio
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Log.e("nav_camera","Selected");
+            Intent intent = new Intent(this, DisplayMessageActivity.class);
+            String message = "Message";
+            intent.putExtra(EXTRA_MESSAGE, message);
+
+            startActivityForResult(intent,1);
+
         } else if (id == R.id.nav_gallery) {
-
+            Log.e("nav_gallery","Selected");
         } else if (id == R.id.nav_slideshow) {
-
+            Log.e("nav_slideshow","Selected");
         } else if (id == R.id.nav_manage) {
-
+            Log.e("nav_manage","Selected");
         } else if (id == R.id.nav_share) {
-
+            Log.e("nav_share","Selected");
         } else if (id == R.id.nav_send) {
-
+            Log.e("nav_send","Selected");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                strResultIntent = data.getStringExtra("jsonSavedTransfer");
+            }
+        }
+        Log.e("StrSuccess",strResultIntent);
+    }
+
 }
