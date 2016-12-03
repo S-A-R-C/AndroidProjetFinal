@@ -2,6 +2,8 @@ package com.s_a_r_c.applicationprojecttest;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,10 +24,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import com.s_a_r_c.applicationprojecttest.dummy.DummyContent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -36,14 +43,20 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class playListListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
+public class playListListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    public final static String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
-    String EXTRA_MESSAGE = "sup";
+
     String strResultIntent = "";
+    String strMotDePasse = "";
+    String strCourriel = "";
+    String strId = "";
+    String strAvatar = "";
+    String strAlias = "";
     private boolean mTwoPane;
 
     @Override
@@ -206,11 +219,17 @@ public class playListListActivity extends AppCompatActivity implements Navigatio
             Intent intent = new Intent(this, DisplayMessageActivity.class);
             String message = "Message";
             intent.putExtra(EXTRA_MESSAGE, message);
-
             startActivityForResult(intent,1);
-
         } else if (id == R.id.nav_gallery) {
             Log.e("nav_gallery","Selected");
+
+
+            Intent intent = new Intent(this, ModifyUserActivity.class);
+            String message = strResultIntent;
+            intent.putExtra(EXTRA_MESSAGE, message);
+            startActivity(intent);
+
+
         } else if (id == R.id.nav_slideshow) {
             Log.e("nav_slideshow","Selected");
         } else if (id == R.id.nav_manage) {
@@ -230,6 +249,22 @@ public class playListListActivity extends AppCompatActivity implements Navigatio
         if (requestCode == 1) {
             if(resultCode == RESULT_OK){
                 strResultIntent = data.getStringExtra("jsonSavedTransfer");
+
+                try {
+
+                    JSONObject lireJSON     = new JSONObject(strResultIntent);
+                    strMotDePasse = lireJSON.get("motdepasse").toString();
+                    strCourriel = lireJSON.get("courriel").toString();
+                    strId = lireJSON.get("Id").toString();
+                    strAvatar = lireJSON.get("avatar").toString();
+                    strAlias = lireJSON.get("alias").toString();
+                    setTitle("Utilisateur: "+strAlias);
+                    TextView textview = (TextView)findViewById(R.id.textView);
+                    textview.setText(strCourriel);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e("labo7",e.toString());
+                }
             }
         }
         Log.e("StrSuccess",strResultIntent);

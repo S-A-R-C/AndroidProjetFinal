@@ -31,7 +31,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.s_a_r_c.applicationprojecttest.playListListActivity" />
         </activity>
-        <activity android:name=".DisplayMessageActivity"></activity>
+        <activity android:name=".DisplayMessageActivity" />
+        <activity android:name=".ModifyUserActivity"></activity>
     </application>
 
 </manifest>

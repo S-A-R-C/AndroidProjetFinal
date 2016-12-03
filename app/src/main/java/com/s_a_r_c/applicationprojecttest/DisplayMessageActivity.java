@@ -95,6 +95,11 @@ Log.e("confirmSuccesfulLogin",jsonSaved+"Message");
                 setResult(RESULT_OK, intent);
                 finish();
             }
+            else
+            {
+                TextView mTextView = (TextView) findViewById(R.id.textView4);
+                mTextView.setText("Captcha: (Le captcha est erroné !)");
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
