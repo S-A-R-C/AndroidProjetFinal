@@ -82,9 +82,9 @@ public class DisplayMessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_message);
     }
-public void confirmSuccesfulLoginAttempt()
+public void confirmSuccesffulLoginAttempt()
     {
-Log.e("confirmSuccesfulLogin",jsonSaved+"Message");
+Log.e("confirmSuccesffulLogin",jsonSaved+"Message");
         try {
             JSONObject lireJSON     = new JSONObject(jsonSaved);
             strSuccess =lireJSON.get("success").toString();
@@ -121,7 +121,7 @@ Log.e("confirmSuccesfulLogin",jsonSaved+"Message");
     public void sendLoginAttempt(View view) {
         // Do something in response to button
         Log.e("Login Attempt","Username");
-        new DownloadJsonLoginAttemp(null).execute("Useless");
+        new DownloadJsonLoginAttempt(null).execute("Useless");
     }
     public void confirmLogin()
     {
@@ -135,6 +135,10 @@ Log.e("confirmSuccesfulLogin",jsonSaved+"Message");
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             ImageView img= (ImageView) findViewById(R.id.imageView2);
             img.setImageBitmap(decodedByte);
+            img.requestLayout();
+            img.getLayoutParams().height = 200;
+            img.getLayoutParams().width = 200;
+            img.requestLayout();
         } catch (JSONException e) {
             e.printStackTrace();
             Log.e("labo7",e.toString());
@@ -142,26 +146,11 @@ Log.e("confirmSuccesfulLogin",jsonSaved+"Message");
         ////////////////////////////////////////////////////////////////////////
     }
 
-    public static String getMd5Hash(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            BigInteger number = new BigInteger(1, messageDigest);
-            String md5 = number.toString(16);
 
-            while (md5.length() < 32)
-                md5 = "0" + md5;
-
-            return md5;
-        } catch (NoSuchAlgorithmException e) {
-            Log.e("MD5", e.getLocalizedMessage());
-            return null;
-        }
-    }
-    private class DownloadJsonLoginAttemp extends AsyncTask<String, Void, String> {
+    private class DownloadJsonLoginAttempt extends AsyncTask<String, Void, String> {
         String url;
 
-        public DownloadJsonLoginAttemp(String url) {
+        public DownloadJsonLoginAttempt(String url) {
 
             this.url = url;
         }
@@ -225,10 +214,9 @@ Log.e("confirmSuccesfulLogin",jsonSaved+"Message");
 
             HttpURLConnection c = null;
             try {
-//http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket=1287+&captcha=929B3A
-//http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket=1288&captcha=39414A
+
                 URL u = new URL("http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket="+strTicketID+"&captcha="+strCaptcha);
-                Log.e("strCaptchaAttempt","http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket="+strTicketID+"+&captcha="+strCaptcha);
+                Log.e("strCaptchaAttempt","http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket="+strTicketID+"&captcha="+strCaptcha);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("PUT");
                 c.connect();
@@ -262,8 +250,9 @@ Log.e("confirmSuccesfulLogin",jsonSaved+"Message");
         }
 
         protected void onPostExecute(String result) {
+            Log.e("onPostExecute",result+"Message");
             jsonSaved = result;
-            confirmSuccesfulLoginAttempt();
+            confirmSuccesffulLoginAttempt();
         }
     }
 }

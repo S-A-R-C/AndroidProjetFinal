@@ -216,23 +216,21 @@ public class playListListActivity extends AppCompatActivity implements Navigatio
 
         if (id == R.id.nav_camera) {
             Log.e("nav_camera","Selected");
+
+        } else if (id == R.id.nav_gallery) {
+            Log.e("nav_gallery","Selected");
+
+        } else if (id == R.id.nav_slideshow) {
             Intent intent = new Intent(this, DisplayMessageActivity.class);
             String message = "Message";
             intent.putExtra(EXTRA_MESSAGE, message);
             startActivityForResult(intent,1);
-        } else if (id == R.id.nav_gallery) {
-            Log.e("nav_gallery","Selected");
-
-
+            Log.e("nav_slideshow","Selected");
+        } else if (id == R.id.nav_manage) {
             Intent intent = new Intent(this, ModifyUserActivity.class);
             String message = strResultIntent;
             intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
-
-
-        } else if (id == R.id.nav_slideshow) {
-            Log.e("nav_slideshow","Selected");
-        } else if (id == R.id.nav_manage) {
             Log.e("nav_manage","Selected");
         } else if (id == R.id.nav_share) {
             Log.e("nav_share","Selected");
