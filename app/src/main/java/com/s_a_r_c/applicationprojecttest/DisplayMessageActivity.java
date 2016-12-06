@@ -1,4 +1,5 @@
 package com.s_a_r_c.applicationprojecttest;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -12,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,8 +33,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -45,6 +45,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -77,77 +78,89 @@ public class DisplayMessageActivity extends AppCompatActivity {
     String strCaptcha = "";
     String strTicketID = "";
     String strSuccess = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_message);
     }
-public void confirmSuccesffulLoginAttempt()
-    {
-Log.e("confirmSuccesffulLogin",jsonSaved+"Message");
+
+    public void confirmSuccesffulLoginAttempt() {
+        Log.e("confirmSuccesffulLogin", jsonSaved + "Message");
         try {
-            JSONObject lireJSON     = new JSONObject(jsonSaved);
-            strSuccess =lireJSON.get("success").toString();
-            if(strSuccess.equals("true"))
-            {
+            JSONObject lireJSON = new JSONObject(jsonSaved);
+            strSuccess = lireJSON.get("success").toString();
+            if (strSuccess.equals("true")) {
+                //sauvegarde des donnes Utilisateur
+                UserDatabase userDb = new UserDatabase(getApplicationContext());
+                Log.d("xxxxxxxxxxxxxxxxx", jsonSaved);
+                userDb.ajouterUtilisateur(Integer.valueOf(lireJSON.get("Id").toString()),
+                        lireJSON.get("alias").toString(),
+                        lireJSON.get("courriel").toString(),
+                        Integer.valueOf(lireJSON.get("avatar").toString()),
+                        "",
+                        lireJSON.get("motdepasse").toString());
+
                 Intent intent = new Intent();
-                intent.putExtra("jsonSavedTransfer",jsonSaved);
+                intent.putExtra("jsonSavedTransfer", jsonSaved);
                 setResult(RESULT_OK, intent);
                 finish();
-            }
-            else
-            {
+            } else {
                 TextView mTextView = (TextView) findViewById(R.id.textView4);
                 mTextView.setText("Captcha: (Le captcha est erroné !)");
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e("labo7",e.toString());
+            Log.e("labo7", e.toString());
         }
 
     }
-    /** Called when the user clicks the Login button */
-    public void sendConfirmCaptcha(View view)
-    {
-        Log.e("Captcha Attempt","confirm");
+
+    /**
+     * Called when the user clicks the Login button
+     */
+    public void sendConfirmCaptcha(View view) {
+        Log.e("Captcha Attempt", "confirm");
 
         strCaptcha = findViewById(R.id.textView4).toString();
-        EditText mTextView = (EditText)findViewById(R.id.editText3);
+        EditText mTextView = (EditText) findViewById(R.id.editText3);
         strCaptcha = mTextView.getText().toString();
         new DownloadJsonCaptchaAttempt(null).execute("Useless");
 
     }
+
     public void sendLoginAttempt(View view) {
         // Do something in response to button
-        Log.e("Login Attempt","Username");
+        Log.e("Login Attempt", "Username");
         new DownloadJsonLoginAttempt(null).execute("Useless");
     }
-    public void confirmLogin()
-    {
+
+    public void confirmLogin() {
         try {
 
-            JSONObject lireJSON     = new JSONObject(jsonSaved);
+            JSONObject lireJSON = new JSONObject(jsonSaved);
             //JSONObject jsonMovie = new JSONObject();
-            String strCaptcha =lireJSON.get("captcha").toString();
-            strTicketID =lireJSON.get("idTicket").toString();
+            String strCaptcha = lireJSON.get("captcha").toString();
+            strTicketID = lireJSON.get("idTicket").toString();
             byte[] decodedString = Base64.decode(strCaptcha, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            ImageView img= (ImageView) findViewById(R.id.imageView2);
+            ImageView img = (ImageView) findViewById(R.id.imageView2);
             img.setImageBitmap(decodedByte);
             img.requestLayout();
             img.getLayoutParams().height = 200;
             img.getLayoutParams().width = 200;
             img.requestLayout();
+
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.e("labo7",e.toString());
+            Log.e("labo7", e.toString());
         }
         ////////////////////////////////////////////////////////////////////////
     }
 
 
-    private class DownloadJsonLoginAttempt extends AsyncTask<String, Void, String> {
+    private class DownloadJsonLoginAttempt extends AsyncTask < String, Void, String > {
         String url;
 
         public DownloadJsonLoginAttempt(String url) {
@@ -156,12 +169,11 @@ Log.e("confirmSuccesffulLogin",jsonSaved+"Message");
         }
 
 
-
-        protected String doInBackground(String... url) {
+        protected String doInBackground(String...url) {
 
             HttpURLConnection c = null;
             try {
-                  URL u = new URL("http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/connexion?courriel=groy@groy.com&mdp=0fe9a1b70ea556dc15ee1d152e424ee8");
+                URL u = new URL("http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/connexion?courriel=groy@groy.com&mdp=0fe9a1b70ea556dc15ee1d152e424ee8");
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("PUT");
                 c.connect();
@@ -173,7 +185,7 @@ Log.e("confirmSuccesffulLogin",jsonSaved+"Message");
                         StringBuilder sb = new StringBuilder();
                         String line;
                         while ((line = br.readLine()) != null) {
-                            sb.append(line+"\n");
+                            sb.append(line + "\n");
                         }
                         br.close();
                         return sb.toString();
@@ -200,7 +212,7 @@ Log.e("confirmSuccesffulLogin",jsonSaved+"Message");
         }
     }
 
-    private class DownloadJsonCaptchaAttempt extends AsyncTask<String, Void, String> {
+    private class DownloadJsonCaptchaAttempt extends AsyncTask < String, Void, String > {
         String url;
 
         public DownloadJsonCaptchaAttempt(String url) {
@@ -209,14 +221,13 @@ Log.e("confirmSuccesffulLogin",jsonSaved+"Message");
         }
 
 
-
-        protected String doInBackground(String... url) {
+        protected String doInBackground(String...url) {
 
             HttpURLConnection c = null;
             try {
 
-                URL u = new URL("http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket="+strTicketID+"&captcha="+strCaptcha);
-                Log.e("strCaptchaAttempt","http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket="+strTicketID+"&captcha="+strCaptcha);
+                URL u = new URL("http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket=" + strTicketID + "&captcha=" + strCaptcha);
+                Log.e("strCaptchaAttempt", "http://424t.cgodin.qc.ca:8180/ProjetFinalServices/service/utilisateur/verifCaptcha?idTicket=" + strTicketID + "&captcha=" + strCaptcha);
                 c = (HttpURLConnection) u.openConnection();
                 c.setRequestMethod("PUT");
                 c.connect();
@@ -228,7 +239,7 @@ Log.e("confirmSuccesffulLogin",jsonSaved+"Message");
                         StringBuilder sb = new StringBuilder();
                         String line;
                         while ((line = br.readLine()) != null) {
-                            sb.append(line+"\n");
+                            sb.append(line + "\n");
                         }
                         br.close();
                         return sb.toString();
@@ -250,7 +261,7 @@ Log.e("confirmSuccesffulLogin",jsonSaved+"Message");
         }
 
         protected void onPostExecute(String result) {
-            Log.e("onPostExecute",result+"Message");
+            Log.e("onPostExecute", result + "Message");
             jsonSaved = result;
             confirmSuccesffulLoginAttempt();
         }
